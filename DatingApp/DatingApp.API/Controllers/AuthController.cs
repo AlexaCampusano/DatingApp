@@ -18,8 +18,9 @@ namespace DatingApp.API.Controllers
     {
         private readonly IAuthRepository _repository;
         private readonly IConfiguration _config;
-        public AuthController(IAuthRepository repository, IConfiguration config){
-            _repository = repository; 
+        public AuthController(IAuthRepository repository, IConfiguration config)
+        {
+            _repository = repository;
             _config = config;
         }
 
@@ -50,13 +51,13 @@ namespace DatingApp.API.Controllers
                 return Unauthorized();
 
             var claims = new[]{
-                new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
-                new Claim(ClaimTypes.Name, userFromRepo.UserName)
-            };
+                    new Claim(ClaimTypes.NameIdentifier, userFromRepo.Id.ToString()),
+                    new Claim(ClaimTypes.Name, userFromRepo.UserName)
+                };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8
                 .GetBytes(_config.GetSection("AppSettings:Token").Value));
-            
+
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -68,11 +69,12 @@ namespace DatingApp.API.Controllers
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var token  = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenHandler.CreateToken(tokenDescriptor);
 
-            return Ok(new {
+            return Ok(new
+            {
                 token = tokenHandler.WriteToken(token)
             });
         }
-}
+    }
 }
